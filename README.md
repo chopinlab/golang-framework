@@ -3,7 +3,8 @@
 ### 1. 버전 정보
 ```text
 golang version - 1.16.3
-echo framework - 
+echo framework - 4.2.1
+zap framework - 1.16.0
 ```
 
 ```shell

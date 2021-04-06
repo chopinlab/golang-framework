@@ -4,15 +4,52 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"golang-framework/configs"
 	"net/http"
 )
 
 func main() {
 
-	if err := configs.InitConfig(); err != nil {
+	if err := configs.InitAppConfig(); err != nil {
 		panic(fmt.Errorf("Fatal error config file: %s \n", err))
 	}
+
+	//logger, _ := zap.NewProduction()
+	//logger, _ := zap.NewDevelopment()
+	//configaaa := zap.NewDevelopmentConfig()
+	//configaaa.
+	//a, _ := configaaa.Build()
+
+	//print(configaaa.Encoding)
+	devConfig := zap.NewDevelopmentConfig()
+	devConfigEncoder := zap.NewDevelopmentEncoderConfig()
+	devConfigEncoder.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	devConfig.EncoderConfig = devConfigEncoder
+	logger, _ := devConfig.Build()
+
+	//print(devConfig.CallerKey)
+	//
+
+	defer logger.Sync() // flushes buffer, if any
+
+	sugar := logger.Sugar()
+	//slogger := logger.Sugar()
+	sugar.Info("Info() uses sprint")
+	sugar.Infof("Infof() uses %s", "sprintf")
+	sugar.Infow("Infow() allows tags", "name", "Legolas", "type", 1)
+	/*sugar.Infow("failed to fetch URL",
+		// Structured context as loosely typed key-value pairs.
+		"url", "hihihi",
+		"attempt", 3,
+		"backoff", time.Second,
+	)*/
+	sugar.Infof("Failed to fetch URL: %s", "hihi")
+
+	/*if err := configs.InitLogConfig(); err != nil {
+		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+	}*/
 
 	e := echo.New()
 
